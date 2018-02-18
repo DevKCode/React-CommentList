@@ -21,7 +21,8 @@ import { FontAwesomeIcon } from "@fortawesome/fontawesome";
 class CommentInput extends Component {
     formSumbit = e => {
         e.preventDefault();
-        console.log("Form Submit" + this.refs.userComment);
+        console.log("Form Submit" + this.textInput.value);
+        this.props.onSubmit(this.textInput.value);
     };
 
     render() {
@@ -32,9 +33,12 @@ class CommentInput extends Component {
             <
             FormControl type = "text"
             placeholder = "Enter Comment"
-            ref = "userComment" /
-            >
-            <
+            inputRef = {
+                ref => {
+                    this.textInput = ref;
+                }
+            }
+            />{" "} <
             Button type = "submit"
             className = "btn btn-success" > { " " }
             Send { " " } <
@@ -47,57 +51,67 @@ class CommentInput extends Component {
 
 class CommentList extends Component {
     render() {
-        return ( <
-            div >
-            <
-            Label > { this.props.comment } < /Label>{" "} <
-            /div>
-        );
-    }
-}
+            return ( <
+                div > { " " } {
+                    this.props.comment.map(card => < Label > { card.text } < /Label>)}{" "} <
+                        /div>
+                    );
+                }
+            }
 
-class CommentBox extends Component {
-    render() {
-        return ( <
-            Grid >
-            <
-            Row className = "show-grid" >
-            <
-            Col md = { 8 } >
-            <
-            Panel bsStyle = "primary" >
-            <
-            Panel.Heading > CommentList < /Panel.Heading>{" "} <
-            Panel.Body >
-            <
-            CommentList comment = "Reall great today " / >
-            <
-            CommentList comment = "fantastic T20 math last night" / >
-            <
-            CommentList comment = "What a amazing massage s" / >
-            <
-            /Panel.Body>{" "} <
-            /Panel>{" "} <
-            /Col>{" "} <
-            Col md = { 4 } > { " " } <
-            CommentInput / > { " " } <
-            /Col>{" "} <
-            /Row>{" "} <
-            /Grid>
-        );
-    }
-}
+            class CommentBox extends Component {
+                state = {
+                    data: [
+                        { text: "What a awesome match yesterday " },
+                        { text: "Great to have a Lunch today " },
+                        { text: "Went for a shopping today " }
+                    ]
+                };
 
-class App extends Component {
-    render() {
-        return ( <
-            div className = "container" >
-            <
-            CommentBox / >
-            <
-            /div>
-        );
-    }
-}
+                addNewData = newData => {
+                    this.setState(preState => ({
+                        data: preState.data.concat({ text: newData })
+                    }));
+                };
+                render() {
+                    return ( <
+                        Grid >
+                        <
+                        Row className = "show-grid" >
+                        <
+                        Col md = { 8 } >
+                        <
+                        Panel bsStyle = "primary" >
+                        <
+                        Panel.Heading > CommentList < /Panel.Heading>{" "} <
+                        Panel.Body >
+                        <
+                        CommentList comment = { this.state.data }
+                        />{" "} <
+                        /Panel.Body>{" "} <
+                        /Panel>{" "} <
+                        /Col>{" "} <
+                        Col md = { 4 } >
+                        <
+                        CommentInput onSubmit = { this.addNewData }
+                        />{" "} <
+                        /Col>{" "} <
+                        /Row>{" "} <
+                        /Grid>
+                    );
+                }
+            }
 
-export default App;
+            class App extends Component {
+                render() {
+                    return ( <
+                        div className = "container" >
+                        <
+                        CommentBox / >
+                        <
+                        /div>
+                    );
+                }
+            }
+
+            export default App;
